@@ -83,6 +83,8 @@ namespace TeamRanking.Core.Services.Implementations
             if (match == null) return false;
 
             _unitOfWork.Matches.Delete(match);
+            match.Team1.PlayedMatchesCount--;
+            match.Team2.PlayedMatchesCount--;
             await _unitOfWork.SaveChangesAsync();
             return true;
         }

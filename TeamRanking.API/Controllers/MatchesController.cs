@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TeamRanking.Core.DTOs;
 using TeamRanking.Core.Services.Interfaces;
+using static TeamRanking.Core.Constants.GlobalConstants;
 
 namespace TeamRanking.API.Controllers
 {
@@ -78,12 +79,12 @@ namespace TeamRanking.API.Controllers
             var result = await _matchService.DeleteAsync(id);
 
             if (!result)
-                return NotFound();
+                return NotFound($"Match with Id:{id} does not exist!");
 
             // Update team rankings after match is deleted
             await _rankingService.UpdateRankingsAsync();
 
-            return NoContent();
+            return Ok("Deleted!");
         }
 
         // GET: api/matches/rankings

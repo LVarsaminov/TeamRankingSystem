@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TeamRanking.Core.DTOs;
 using TeamRanking.Core.Services.Interfaces;
+using static TeamRanking.Core.Constants.GlobalConstants;
 
 namespace TeamRanking.API.Controllers
 {
@@ -27,24 +28,28 @@ namespace TeamRanking.API.Controllers
 
         // GET: api/teams/{id}
         [HttpGet("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<TeamDto>> GetById(int id)
         {
             var team = await _teamService.GetByIdAsync(id);
 
             if (team == null)
-                return NotFound();
+                return NotFound(doesNotExistMessage);
 
             return Ok(team);
         }
 
         // POST: api/teams
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<(string message, TeamDto teamDto)>> Create(CreateTeamDto createTeamDto)
         {
             var createdTeam = await _teamService.CreateAsync(createTeamDto);
             if(!string.IsNullOrEmpty(createdTeam.message))
             {
-                return Ok(createdTeam.message);
+                return NotFound(createdTeam.message);
             }
             return Ok(createdTeam.Team);
         }
@@ -56,9 +61,9 @@ namespace TeamRanking.API.Controllers
             var result = await _teamService.UpdateAsync(id, updateTeamDto);
 
             if (!result)
-                return NotFound();
+                return NotFound(doesNotExistMessage);
 
-            return NoContent();
+            return Ok(updatedMessage);
         }
 
         // DELETE: api/teams/{id}

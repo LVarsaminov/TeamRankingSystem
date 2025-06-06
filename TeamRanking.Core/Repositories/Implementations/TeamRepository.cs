@@ -36,7 +36,6 @@ namespace TeamRanking.Core.Repositories.Implementations
         public void Update(Team team)
         {
             _context.Teams.Update(team);
-
         }
 
         public void Delete(Team team)

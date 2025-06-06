@@ -5,6 +5,7 @@ using TeamRanking.Core.DTOs;
 using TeamRanking.Core.Models;
 using TeamRanking.Core.Repositories.Interfaces;
 using TeamRanking.Core.Services.Interfaces;
+using static TeamRanking.Core.Constants.GlobalConstants;
 
 namespace TeamRanking.Core.Services.Implementations
 {
@@ -38,7 +39,7 @@ namespace TeamRanking.Core.Services.Implementations
             var existingTeam = await _unitOfWork.Teams.GetByNameAsync(teamDto.Name);
             if (existingTeam != null)
             {
-                return ("This team already exists", null);
+                return (teamAlreadyExistsMessage, null);
             }
 
             var team = _mapper.Map<Team>(teamDto);
@@ -52,13 +53,12 @@ namespace TeamRanking.Core.Services.Implementations
 
         public async Task<bool> UpdateAsync(int id, UpdateTeamDto teamDto)
         {
-            if (!await _unitOfWork.Teams.ExistsAsync(id))
+            var team = await _unitOfWork.Teams.GetByIdAsync(id);
+            if (team == null)
                 return false;
 
-            var team = _mapper.Map<Team>(teamDto);
-            var teamPlayedMatchesCount = await _unitOfWork.Teams.GetByIdAsync(id);
-            team.Id = id;
-            team.PlayedMatchesCount = teamPlayedMatchesCount.PlayedMatchesCount;
+            team.Name = teamDto.Name;
+
             _unitOfWork.Teams.Update(team);
             await _unitOfWork.SaveChangesAsync();
 
