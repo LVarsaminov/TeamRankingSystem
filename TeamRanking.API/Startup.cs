@@ -32,16 +32,13 @@ namespace TeamRanking.API
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            // Repositories
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<IMatchRepository, MatchRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // Services
             services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IMatchService, MatchService>();
 
-            // Register the scoring strategy and ranking service
             services.AddScoped<IScoringStrategy, ScoringStrategy>();
             services.AddScoped<IRankingService, RankingService>();
 
@@ -75,12 +72,10 @@ namespace TeamRanking.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TeamRanking.API v1"));
             }
 
-            // Custom exception handling middleware (optional)
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 
-            // Enable CORS - must be between UseRouting and UseEndpoints
             app.UseCors("AllowAll");
 
             app.UseRouting();

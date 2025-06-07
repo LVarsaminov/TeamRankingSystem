@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamRanking.API", "TeamRank
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamRanking.Core", "TeamRanking.Core\TeamRanking.Core.csproj", "{BEDF5257-7BBF-4E87-9CD7-AC22792D0231}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamRanking.Tests", "TeamRanking.Tests\TeamRanking.Tests.csproj", "{5ACCD160-9747-40E0-AD95-8AC433B57C45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BEDF5257-7BBF-4E87-9CD7-AC22792D0231}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEDF5257-7BBF-4E87-9CD7-AC22792D0231}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEDF5257-7BBF-4E87-9CD7-AC22792D0231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ACCD160-9747-40E0-AD95-8AC433B57C45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ACCD160-9747-40E0-AD95-8AC433B57C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ACCD160-9747-40E0-AD95-8AC433B57C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ACCD160-9747-40E0-AD95-8AC433B57C45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

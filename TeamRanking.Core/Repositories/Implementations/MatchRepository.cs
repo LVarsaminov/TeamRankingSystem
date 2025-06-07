@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TeamRanking.Core.Data;
 using TeamRanking.Core.Repositories.Interfaces;
-using TeamRanking.Core.Models;
 using System.Linq;
 
 namespace TeamRanking.Core.Repositories.Implementations
