@@ -46,7 +46,7 @@ namespace TeamRanking.Core.Tests.Services
             new Team { Id = 1, Name = "Team1" },
             new Team { Id = 2, Name = "Team2" }
         };
-            var matches = new List<Match>();
+            var matches = new List<TeamRanking.Core.Models.Match>();
 
             _teamRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(teams);
             _matchRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(matches);
@@ -56,7 +56,7 @@ namespace TeamRanking.Core.Tests.Services
             { 1, 10 },
             { 2, 20 }
         };
-            _scoringStrategyMock.Setup(s => s.CalculatePoints(It.IsAny<List<Team>>(), It.IsAny<List<Match>>()))
+            _scoringStrategyMock.Setup(s => s.CalculatePoints(It.IsAny<List<Team>>(), It.IsAny<List<TeamRanking.Core.Models.Match>>()))
                 .Returns(pointsDict);
 
             var teamDtos = new List<TeamDto>
@@ -85,7 +85,7 @@ namespace TeamRanking.Core.Tests.Services
             new Team { Id = 1, Name = "Team1" },
             new Team { Id = 2, Name = "Team2" }
         };
-            var matches = new List<Match>();
+            var matches = new List<TeamRanking.Core.Models.Match>();
 
             _teamRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(teams);
             _matchRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(matches);
@@ -95,7 +95,7 @@ namespace TeamRanking.Core.Tests.Services
             { 1, 15 },
             { 2, 25 }
         };
-            _scoringStrategyMock.Setup(s => s.CalculatePoints(It.IsAny<List<Team>>(), It.IsAny<List<Match>>()))
+            _scoringStrategyMock.Setup(s => s.CalculatePoints(It.IsAny<List<Team>>(), It.IsAny<List<TeamRanking.Core.Models.Match>>()))
                 .Returns(pointsDict);
 
             _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
@@ -115,9 +115,9 @@ namespace TeamRanking.Core.Tests.Services
         public async Task UpdateRankingsForCurrentMatchAsync_ShouldReturnIfNoMatches()
         {
             // Arrange
-            var match = new Match { Team1Id = 1, Team2Id = 2 };
+            var match = new TeamRanking.Core.Models.Match { Team1Id = 1, Team2Id = 2 };
             _teamRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Team>());
-            _matchRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Match>());
+            _matchRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<TeamRanking.Core.Models.Match>());
 
             // Act
             await _rankingService.UpdateRankingsForCurrentMatchAsync(match);
@@ -131,7 +131,7 @@ namespace TeamRanking.Core.Tests.Services
         public async Task UpdateRankingsForCurrentMatchAsync_ShouldUpdateTeamsPointsForMatch()
         {
             // Arrange
-            var match = new Match { Team1Id = 1, Team2Id = 2 };
+            var match = new TeamRanking.Core.Models.Match { Team1Id = 1, Team2Id = 2 };
 
             var teams = new List<Team>
         {
@@ -139,7 +139,7 @@ namespace TeamRanking.Core.Tests.Services
             new Team { Id = 2, Name = "Team2" },
             new Team { Id = 3, Name = "Team3" }
         };
-            var matches = new List<Match> { match };
+            var matches = new List<TeamRanking.Core.Models.Match> { match };
 
             _teamRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(teams);
             _matchRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(matches);
@@ -150,7 +150,7 @@ namespace TeamRanking.Core.Tests.Services
             { 2, 22 },
             { 3, 5 }
         };
-            _scoringStrategyMock.Setup(s => s.CalculatePoints(It.IsAny<List<Team>>(), It.IsAny<List<Match>>()))
+            _scoringStrategyMock.Setup(s => s.CalculatePoints(It.IsAny<List<Team>>(), It.IsAny<List<TeamRanking.Core.Models.Match>>()))
                 .Returns(pointsDict);
 
             _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);

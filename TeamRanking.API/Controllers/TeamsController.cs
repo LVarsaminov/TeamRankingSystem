@@ -56,6 +56,8 @@ namespace TeamRanking.API.Controllers
 
         // PUT: api/teams/{id}
         [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> Update(int id, UpdateTeamDto updateTeamDto)
         {
             var result = await _teamService.UpdateAsync(id, updateTeamDto);
@@ -68,6 +70,8 @@ namespace TeamRanking.API.Controllers
 
         // DELETE: api/teams/{id}
         [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _teamService.DeleteAsync(id);
@@ -75,7 +79,7 @@ namespace TeamRanking.API.Controllers
             if (!result)
                 return NotFound();
 
-            return NoContent();
+            return Ok(deleteMatchSuccessfuly);
         }
     }
 }

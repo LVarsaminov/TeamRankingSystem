@@ -16,9 +16,9 @@ namespace TeamRanking.Core.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<Match>> GetAllAsync()
+        public async Task<IEnumerable<TeamRanking.Core.Models.Match>> GetAllAsync()
         {
-            if (_context.Matches.Count() > 0)
+            if (_context.Matches.Any())
             {
                 return await _context.Matches.Include(m => m.Team1)
                                              .Include(m => m.Team2)
@@ -27,25 +27,25 @@ namespace TeamRanking.Core.Repositories.Implementations
             return null;
         }
 
-        public async Task<Match> GetByIdAsync(int id)
+        public async Task<TeamRanking.Core.Models.Match> GetByIdAsync(int id)
         {
             return await _context.Matches.Include(m => m.Team1)
                                          .Include(m => m.Team2)
                                          .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task AddAsync(Match match)
+        public async Task AddAsync(TeamRanking.Core.Models.Match match)
         {
             await _context.Matches.AddAsync(match);
             await _context.SaveChangesAsync();
         }
 
-        public void Update(Match match)
+        public void Update(TeamRanking.Core.Models.Match match)
         {
             _context.Matches.Update(match);
         }
 
-        public void Delete(Match match)
+        public void Delete(TeamRanking.Core.Models.Match match)
         {
             _context.Matches.Remove(match);
         }

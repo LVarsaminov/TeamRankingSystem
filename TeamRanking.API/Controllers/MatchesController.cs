@@ -84,7 +84,7 @@ namespace TeamRanking.API.Controllers
             // Update team rankings after match is deleted
             await _rankingService.UpdateRankingsAsync();
 
-            return Ok("Deleted!");
+            return Ok(deleteMatchSuccessfuly);
         }
 
         // GET: api/matches/rankings

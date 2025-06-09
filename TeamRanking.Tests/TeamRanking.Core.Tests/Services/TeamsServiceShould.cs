@@ -16,7 +16,6 @@ namespace TeamRanking.Core.Tests.Services
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<IRankingService> _rankingServiceMock;
-        private readonly Mock<ITeamRepository> _teamRepositoryMock; 
         private readonly TeamService _teamService;
 
         public TeamServiceShould()

@@ -66,7 +66,7 @@ namespace TeamRanking.Core.Services.Implementations
             var teams = await _unitOfWork.Teams.GetAllAsync(); 
             var matches = await _unitOfWork.Matches.GetAllAsync();
 
-            if (matches.Count() <= 0)
+            if (!matches.Any())
             {
                 return;
             }

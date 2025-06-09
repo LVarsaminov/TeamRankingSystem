@@ -33,7 +33,7 @@ namespace TeamRanking.Core.Tests.Services
         public async Task GetAllAsync_ReturnsMappedMatchDtos()
         {
             // Arrange
-            var matches = new List<Match> { new Match(), new Match() };
+            var matches = new List<TeamRanking.Core.Models.Match> { new TeamRanking.Core.Models.Match(), new TeamRanking.Core.Models.Match() };
             var matchDtos = new List<MatchDto> { new MatchDto(), new MatchDto() };
 
             _unitOfWorkMock.Setup(u => u.Matches.GetAllAsync()).ReturnsAsync(matches);
@@ -50,7 +50,7 @@ namespace TeamRanking.Core.Tests.Services
         public async Task GetByIdAsync_ReturnsMappedMatchDto()
         {
             // Arrange
-            var match = new Match { Id = 1 };
+            var match = new TeamRanking.Core.Models.Match { Id = 1 };
             var matchDto = new MatchDto { Id = 1 };
 
             _unitOfWorkMock.Setup(u => u.Matches.GetByIdAsync(1)).ReturnsAsync(match);
@@ -103,12 +103,12 @@ namespace TeamRanking.Core.Tests.Services
             var createDto = new CreateMatchDto { Team1Name = "TeamA", Team2Name = "TeamB" };
             var teamA = new Team { Id = 1, PlayedMatchesCount = 0 };
             var teamB = new Team { Id = 2, PlayedMatchesCount = 0 };
-            var match = new Match();
+            var match = new TeamRanking.Core.Models.Match();
             var matchDto = new MatchDto();
 
             _teamRepositoryMock.Setup(t => t.GetByNameAsync("TeamA")).ReturnsAsync(teamA);
             _teamRepositoryMock.Setup(t => t.GetByNameAsync("TeamB")).ReturnsAsync(teamB);
-            _mapperMock.Setup(m => m.Map<Match>(createDto)).Returns(match);
+            _mapperMock.Setup(m => m.Map<TeamRanking.Core.Models.Match>(createDto)).Returns(match);
             _mapperMock.Setup(m => m.Map<MatchDto>(match)).Returns(matchDto);
 
             _unitOfWorkMock.Setup(u => u.Matches.AddAsync(match)).Returns(Task.CompletedTask);
@@ -149,10 +149,10 @@ namespace TeamRanking.Core.Tests.Services
         {
             // Arrange
             var updateDto = new UpdateMatchDto();
-            var match = new Match { Id = 1 };
+            var match = new TeamRanking.Core.Models.Match { Id = 1 };
 
             _unitOfWorkMock.Setup(u => u.Matches.ExistsAsync(1)).ReturnsAsync(true);
-            _mapperMock.Setup(m => m.Map<Match>(updateDto)).Returns(match);
+            _mapperMock.Setup(m => m.Map<TeamRanking.Core.Models.Match>(updateDto)).Returns(match);
 
             // Act
             var result = await _service.UpdateAsync(1, updateDto);
@@ -168,7 +168,7 @@ namespace TeamRanking.Core.Tests.Services
         public async Task DeleteAsync_ReturnsFalse_WhenMatchNotFound()
         {
             // Arrange
-            _unitOfWorkMock.Setup(u => u.Matches.GetByIdAsync(1)).ReturnsAsync((Match)null);
+            _unitOfWorkMock.Setup(u => u.Matches.GetByIdAsync(1)).ReturnsAsync((TeamRanking.Core.Models.Match)null);
 
             // Act
             var result = await _service.DeleteAsync(1);
@@ -181,7 +181,7 @@ namespace TeamRanking.Core.Tests.Services
         public async Task DeleteAsync_DeletesMatchAndDecrementsPlayedMatchesCount()
         {
             // Arrange
-            var match = new Match
+            var match = new TeamRanking.Core.Models.Match
             {
                 Id = 1,
                 Team1 = new Team { PlayedMatchesCount = 2 },
