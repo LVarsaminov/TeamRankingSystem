@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TeamRanking.Core.DTOs;
 using TeamRanking.Core.Models;
@@ -67,17 +68,27 @@ namespace TeamRanking.Core.Services.Implementations
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<(bool success, string? errorMessage)> DeleteAsync(int id)
         {
             var team = await _unitOfWork.Teams.GetByIdAsync(id);
-            if (team == null) return false;
+            if (team == null)
+                return (false,teamIdDoesNotExistMessage);
+
+            var matchesWithTeam = await _unitOfWork.Matches.FindAsync(
+             m => m.Team1Id == id || m.Team2Id == id
+            );
+
+            if (matchesWithTeam.Any())
+            {
+                return (false, deletedTeamUnsuccessfulyMessage);
+            }
 
             _unitOfWork.Teams.Delete(team);
             await _unitOfWork.SaveChangesAsync();
 
             await _rankingService.UpdateRankingsAsync();
 
-            return true;
+            return (true, null);
         }
     }
 }

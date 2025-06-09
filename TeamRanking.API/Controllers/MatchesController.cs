@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TeamRanking.Core.DTOs;
 using TeamRanking.Core.Services.Interfaces;
@@ -25,6 +26,10 @@ namespace TeamRanking.API.Controllers
         public async Task<ActionResult<IEnumerable<MatchDto>>> GetAll()
         {
             var matches = await _matchService.GetAllAsync();
+            if (!matches.Any())
+            {
+                return NotFound(noMatchesExistingMessage);
+            }
             return Ok(matches);
         }
 
@@ -64,12 +69,12 @@ namespace TeamRanking.API.Controllers
             var result = await _matchService.UpdateAsync(id, updateMatchDto);
 
             if (!result)
-                return NotFound();
+                return NotFound(matchIdDoesNotExistMessage);
 
             // Update team rankings after match is updated
             await _rankingService.UpdateRankingsAsync();
 
-            return NoContent();
+            return Ok(updatedMessage); 
         }
 
         // DELETE: api/matches/{id}
@@ -79,20 +84,12 @@ namespace TeamRanking.API.Controllers
             var result = await _matchService.DeleteAsync(id);
 
             if (!result)
-                return NotFound($"Match with Id:{id} does not exist!");
+                return NotFound(matchIdDoesNotExistMessage);
 
             // Update team rankings after match is deleted
             await _rankingService.UpdateRankingsAsync();
 
-            return Ok(deleteMatchSuccessfuly);
-        }
-
-        // GET: api/matches/rankings
-        [HttpGet("rankingList")]
-        public async Task<ActionResult<IEnumerable<TeamDto>>> GetRankings()
-        {
-            var rankings = await _rankingService.GetRankingsAsync();
-            return Ok(rankings);
+            return Ok(deletedSuccessfulyMessage);
         }
     }
 }

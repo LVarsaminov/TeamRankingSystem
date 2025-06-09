@@ -47,6 +47,10 @@ namespace TeamRanking.Core.Services.Implementations
             {
                 return ($"{matchDto.Team2Name} does not exist!", null);
             }
+            if(team1.Name == team2.Name)
+            {
+                return ($"{team1.Name} cannot have a match alone", null);
+            }
             var match = _mapper.Map<Match>(matchDto);
 
             team1.PlayedMatchesCount++;
@@ -67,13 +71,17 @@ namespace TeamRanking.Core.Services.Implementations
 
         public async Task<bool> UpdateAsync(int id, UpdateMatchDto matchDto)
         {
-            if (!await _unitOfWork.Matches.ExistsAsync(id))
+            var existingMatch = await _unitOfWork.Matches.GetByIdAsync(id);
+            if (existingMatch == null)
                 return false;
 
-            var match = _mapper.Map<Match>(matchDto);
-            match.Id = id;
-            _unitOfWork.Matches.Update(match);
+            existingMatch.Team1Score = matchDto.Team1Score;
+            existingMatch.Team2Score = matchDto.Team2Score;
+            existingMatch.MatchDate = matchDto.MatchDate;
+
+            _unitOfWork.Matches.Update(existingMatch);
             await _unitOfWork.SaveChangesAsync();
+
             return true;
         }
 
@@ -83,8 +91,14 @@ namespace TeamRanking.Core.Services.Implementations
             if (match == null) return false;
 
             _unitOfWork.Matches.Delete(match);
-            match.Team1.PlayedMatchesCount--;
-            match.Team2.PlayedMatchesCount--;
+            if (match.Team1.PlayedMatchesCount > 0)
+            {
+                match.Team1.PlayedMatchesCount--;
+            }
+            if (match.Team2.PlayedMatchesCount > 0)
+            {
+                match.Team2.PlayedMatchesCount--;
+            }
             await _unitOfWork.SaveChangesAsync();
             return true;
         }

@@ -25,19 +25,17 @@ namespace TeamRanking.Core.Services.Implementations
 
         public async Task<IEnumerable<TeamDto>> GetRankingsAsync()
         {
-            var teams = await _unitOfWork.Teams.GetAllAsync();
-            var matches = await _unitOfWork.Matches.GetAllAsync();
+            var teams = await _unitOfWork.Teams.GetAllAsync() ?? new List<Team>();
+            var matches = await _unitOfWork.Matches.GetAllAsync() ?? new List<Match>();
 
-            var teamPoints = _scoringStrategy.CalculatePoints(teams.ToList(), matches.ToList());
+            var teamPoints = _scoringStrategy.CalculatePoints(teams.ToList(), matches.ToList())
+                                                                ?? new Dictionary<int, int>();
 
             var teamDtos = _mapper.Map<IEnumerable<TeamDto>>(teams);
 
             foreach (var teamDto in teamDtos)
             {
-                if (teamPoints.TryGetValue(teamDto.Id, out var points))
-                    teamDto.Points = points;
-                else
-                    teamDto.Points = 0;
+                teamDto.Points = teamPoints.TryGetValue(teamDto.Id, out var points) ? points : 0;
             }
 
             return teamDtos.OrderByDescending(t => t.Points);
@@ -46,9 +44,10 @@ namespace TeamRanking.Core.Services.Implementations
         public async Task UpdateRankingsAsync()
         {
             var teams = await _unitOfWork.Teams.GetAllAsync();
-            var matches = await _unitOfWork.Matches.GetAllAsync();
+            var matches = await _unitOfWork.Matches.GetAllAsync() ?? new List<Match>();
 
             var teamPoints = _scoringStrategy.CalculatePoints(teams.ToList(), matches.ToList());
+
 
             foreach (var team in teams)
             {

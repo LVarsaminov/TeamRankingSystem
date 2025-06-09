@@ -10,6 +10,6 @@ namespace TeamRanking.Core.Services.Interfaces
         Task<TeamDto> GetByIdAsync(int id);
         Task<(string message, TeamDto Team)> CreateAsync(CreateTeamDto teamDto);
         Task<bool> UpdateAsync(int id, UpdateTeamDto teamDto);
-        Task<bool> DeleteAsync(int id);
+        Task<(bool success, string? errorMessage)> DeleteAsync(int id);
     }
 }

@@ -13,11 +13,13 @@ namespace TeamRanking.API.Tests.Controllers
     {
         private readonly Mock<ITeamService> _mockTeamService;
         private readonly TeamsController _controller;
+        private readonly Mock<IRankingService> _mockRankingService;
 
         public TeamsControllerShould()
         {
             _mockTeamService = new Mock<ITeamService>();
-            _controller = new TeamsController(_mockTeamService.Object);
+            _mockRankingService = new Mock<IRankingService>();
+            _controller = new TeamsController(_mockTeamService.Object, _mockRankingService.Object);
         }
 
         [Fact]
@@ -118,7 +120,7 @@ namespace TeamRanking.API.Tests.Controllers
 
             var result = await _controller.Delete(1);
 
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
@@ -129,6 +131,19 @@ namespace TeamRanking.API.Tests.Controllers
             var result = await _controller.Delete(99);
 
             Assert.IsType<NotFoundResult>(result);
+        }
+
+
+        [Fact]
+        public async Task GetRankings_ReturnsOk_WithListOfTeams()
+        {
+            var rankings = new List<TeamDto> { new TeamDto { Id = 1 }, new TeamDto { Id = 2 } };
+            _mockRankingService.Setup(s => s.GetRankingsAsync()).ReturnsAsync(rankings);
+
+            var result = await _controller.GetRankings();
+
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(rankings, okResult.Value);
         }
     }
 }

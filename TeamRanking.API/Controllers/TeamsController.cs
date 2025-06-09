@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TeamRanking.Core.DTOs;
+using TeamRanking.Core.Services.Implementations;
 using TeamRanking.Core.Services.Interfaces;
 using static TeamRanking.Core.Constants.GlobalConstants;
 
@@ -12,10 +14,12 @@ namespace TeamRanking.API.Controllers
     public class TeamsController : ControllerBase
     {
         private readonly ITeamService _teamService;
+        private readonly IRankingService _rankingService;
 
-        public TeamsController(ITeamService teamService)
+        public TeamsController(ITeamService teamService, IRankingService rankingService)
         {
             _teamService = teamService;
+            _rankingService = rankingService;
         }
 
         // GET: api/teams
@@ -23,6 +27,10 @@ namespace TeamRanking.API.Controllers
         public async Task<ActionResult<IEnumerable<TeamDto>>> GetAll()
         {
             var teams = await _teamService.GetAllAsync();
+            if (!teams.Any())
+            {
+                return NotFound(noTeamsExistingMessage);
+            }
             return Ok(teams);
         }
 
@@ -35,7 +43,7 @@ namespace TeamRanking.API.Controllers
             var team = await _teamService.GetByIdAsync(id);
 
             if (team == null)
-                return NotFound(doesNotExistMessage);
+                return NotFound(teamNameDoesNotExistMessage);
 
             return Ok(team);
         }
@@ -63,7 +71,7 @@ namespace TeamRanking.API.Controllers
             var result = await _teamService.UpdateAsync(id, updateTeamDto);
 
             if (!result)
-                return NotFound(doesNotExistMessage);
+                return NotFound(teamIdDoesNotExistMessage);
 
             return Ok(updatedMessage);
         }
@@ -74,12 +82,27 @@ namespace TeamRanking.API.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _teamService.DeleteAsync(id);
+            var (success, errorMessage) = await _teamService.DeleteAsync(id);
 
-            if (!result)
-                return NotFound();
+            if (!success)
+            {
+                if (errorMessage == teamIdDoesNotExistMessage)
+                    return NotFound(errorMessage);
 
-            return Ok(deleteMatchSuccessfuly);
+                if (errorMessage == deletedTeamUnsuccessfulyMessage)
+                    return BadRequest(errorMessage);
+            }
+
+            return Ok(deletedSuccessfulyMessage);
+        }
+
+
+        // GET: api/matches/rankings
+        [HttpGet("rankingList")]
+        public async Task<ActionResult<IEnumerable<TeamDto>>> GetRankings()
+        {
+            var rankings = await _rankingService.GetRankingsAsync();
+            return Ok(rankings);
         }
     }
 }

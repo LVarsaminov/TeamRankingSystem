@@ -136,17 +136,5 @@ namespace TeamRanking.API.Tests.Controllers
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal("Match with Id:99 does not exist!", notFoundResult.Value);
         }
-
-        [Fact]
-        public async Task GetRankings_ReturnsOk_WithListOfTeams()
-        {
-            var rankings = new List<TeamDto> { new TeamDto { Id = 1 }, new TeamDto { Id = 2 } };
-            _mockRankingService.Setup(s => s.GetRankingsAsync()).ReturnsAsync(rankings);
-
-            var result = await _controller.GetRankings();
-
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(rankings, okResult.Value);
-        }
     }
 }
